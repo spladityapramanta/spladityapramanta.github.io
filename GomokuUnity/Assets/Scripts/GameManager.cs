@@ -6,13 +6,21 @@ public class GameManager : MonoBehaviour {
 
 	public Tile tileLib;
 	public GameObject pieceLib;
+	public GameObject startMenu;
+	public GameObject gameoverMenu;
 	public Material player1Mat, player2Mat;
 	Tile[,] tiles;
+	public enum gameState{
+		start, ingame, gameover
+	}
 
+	public gameState State;
 	bool isPlayer1Turn = true;
 
 	void Awake () {
 		instance = this;
+		State = gameState.start;
+		gameoverMenu.SetActive (false);
 	}
 	void Start () {
 		tiles = new Tile[15,15];
@@ -24,8 +32,31 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	public void GOClicked(){
+		Debug.Log ("Gas");
+		State = gameState.ingame;
+		startMenu.SetActive (false);
+	}
+
+	public void restart(){
+		Debug.Log("RESTART");
+		for (int x=0;x<15;x++){
+			for (int y=0;y<15;y++){
+				tiles[x,y].state = Tile.TileState.empty;
+			}
+		}
+		bool isPlayer1Turn = true;
+		gameoverMenu.SetActive (false);
+		State = gameState.ingame;
+	}
+
+	public void quit(){
+		Debug.Log("QUIT");
+		Application.Quit ();
+	}
+
 	public static void TileClicked(Tile tile){
-		if (instance!=null){
+		if (instance!=null && instance.State == gameState.ingame){
 			GameObject tempPiece = Instantiate(instance.pieceLib) as GameObject;
 			tempPiece.SetActive(true);
 			tempPiece.transform.position = new Vector3(-7+tile.idX,0.2f, -7+tile.idY);
@@ -97,6 +128,10 @@ public class GameManager : MonoBehaviour {
 		int maxRow = 0;
 		for (int i=0;i<4;i++){
 			maxRow = Mathf.Max(maxRow, Mathf.Abs(lastSameTile[i].idY-lastSameTile[i+4].idY)+1, Mathf.Abs(lastSameTile[i].idX-lastSameTile[i+4].idX)+1 );
+		}
+		if (maxRow >= 5) {
+			State = gameState.gameover;
+			gameoverMenu.SetActive(true);
 		}
 		return (maxRow >=5);
 	}
