@@ -27,9 +27,9 @@ public class GameManager : MonoBehaviour {
 	public static void TileClicked(Tile tile){
 		if (instance!=null){
 			GameObject tempPiece = Instantiate(instance.pieceLib) as GameObject;
-			tempPiece.transform.position = new Vector3(-7+tile.idX,0.2f, -7+tile.idY);
-			tempPiece.GetComponent<MeshRenderer>().material = instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat;
 			tempPiece.SetActive(true);
+			tempPiece.transform.position = new Vector3(-7+tile.idX,0.2f, -7+tile.idY);
+			tempPiece.GetComponentInChildren<MeshRenderer>().material = instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat;
 			tempPiece.transform.parent = tile.GetComponentInChildren<MeshRenderer>().transform;
 			tile.state = instance.isPlayer1Turn ? Tile.TileState.p1 : Tile.TileState.p2;
 			instance.StartCoroutine(instance.PutAnimation(tile));
