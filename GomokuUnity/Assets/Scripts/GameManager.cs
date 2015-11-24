@@ -103,6 +103,7 @@ public class GameManager : MonoBehaviour {
 
 	IEnumerator PutAnimation(Tile centerTile){
 		float t=0;
+		yield return new WaitForSeconds(0.15f);
 		centerTile.GetComponent<Animator>().SetFloat("Power",1);
 		centerTile.GetComponent<Animator>().SetTrigger("Woble");
 		for (int distance=1;distance<5;distance++){
