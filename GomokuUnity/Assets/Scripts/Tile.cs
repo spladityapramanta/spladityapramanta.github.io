@@ -52,7 +52,7 @@ public class Tile : MonoBehaviour {
 		GetComponentInChildren<Renderer>().material.SetColor("_Color",new Color(brightness+power,brightness+power,brightness+power));
 		DG.Tweening.DOTween.To(
 			()=>GetComponentInChildren<Renderer>().material.GetColor("_Color").r,
-			(float x)=>(GetComponentInChildren<Renderer>().material.SetColor("_Color",new Color(x,x,x,0.7f))),
+			(float x)=>(GetComponentInChildren<Renderer>().material.SetColor("_Color",new Color(x,x,brightness+(x-brightness)*0.8f,0.7f))),
 			brightness, 0.9f);
 	}
 }

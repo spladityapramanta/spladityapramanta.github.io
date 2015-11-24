@@ -108,11 +108,13 @@ public class GameManager : MonoBehaviour {
 	IEnumerator ChainGlowAnimation(Tile centerTile){
 		float t = 0;
 		centerTile.Blink(3);
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.3f,1);
 		for (int distance=1;distance<7;distance++){
 			while (t<WOBLEDELAY * distance){
 				t+=Time.deltaTime;
 				yield return 0;
 			}
+			SFXManager.PlayOneShot(SFXManager.SFX.ping,0.3f-0.02f*distance,1+0.15f*distance);
 			for (int dir=0;dir<8;dir++){
 				int checkX=centerTile.idX;
 				int checkY=centerTile.idY;
@@ -160,6 +162,7 @@ public class GameManager : MonoBehaviour {
 		float t=0;
 		yield return new WaitForSeconds(0.28f-WOBLEDELAY);
 		centerTile.Woble(1);
+		SFXManager.PlayOneShot(SFXManager.SFX.vibrato);
 		StartCoroutine(ChainGlowAnimation(centerTile));
 		for (int distance=1;distance<5;distance++){
 			while (t<WOBLEDELAY * distance){
