@@ -32,7 +32,8 @@ public class GameManager : MonoBehaviour {
 			tile.AttachPiece(tempPiece);
 			//tempPiece.transform.parent = tile.GetComponentInChildren<MeshRenderer>().transform;
 			//tempPiece.transform.localPosition = new Vector3(0,0.53f,0);
-			tempPiece.GetComponentInChildren<MeshRenderer>().material = instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat;
+			tempPiece.GetComponent<Piece>().SetMaterial(instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat);
+			//tempPiece.GetComponentInChildren<MeshRenderer>().material = instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat;
 			tile.state = instance.isPlayer1Turn ? Tile.TileState.p1 : Tile.TileState.p2;
 			instance.StartCoroutine(instance.PutAnimation(tile));
 			if (instance.CheckWinFromTile(tile)) Debug.Log((instance.isPlayer1Turn?"player 1":"player 2")+" win!");

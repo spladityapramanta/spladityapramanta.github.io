@@ -2,14 +2,14 @@
 using System.Collections;
 
 public class Piece : MonoBehaviour {
+	public ParticleSystem splash, hype;
 
-	// Use this for initialization
-	void Start () {
-	
+	public void SetMaterial(Material mat){
+		splash.GetComponent<ParticleSystemRenderer>().material = mat;
+		GetComponentInChildren<MeshRenderer>().material = mat;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public void Splash(){
+		splash.Emit(10);
 	}
 }
