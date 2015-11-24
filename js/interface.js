@@ -32,15 +32,15 @@ $(document).ready(function(){
         }catch(e){}
         if(gameData.mode==='vshuman'){
             game.mode='hvh';
-            game.init(new HumanPlayer("black"), new HumanPlayer("white"));
+            game.init(new HumanPlayer("red"), new HumanPlayer("white"));
         }else{
             var color, other;
-            if(gameData.color==='black'){
-                color='black';
+            if(gameData.color==='red'){
+                color='red';
                 other='white';
             }else{
                 color='white';
-                other='black';
+                other='red';
             }
             game.mode=gameData.level;
             game.init(new HumanPlayer(color), new AIPlayer(game.mode, other));
@@ -104,7 +104,7 @@ $(document).ready(function(){
 
         var colorObj = $("#game-info>.go");
         self.setColor = function(color){
-            colorObj.removeClass("white").removeClass("black");
+            colorObj.removeClass("white").removeClass("red");
             if(color){
                 colorObj.addClass(color);
             }
