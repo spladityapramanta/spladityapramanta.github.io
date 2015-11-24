@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour {
 
 	bool isPlayer1Turn = true;
 	bool isAnimating = false;
+	const float WOBLEDELAY = 0.05f; 
 
 	void Awake () {
 		instance = this;
@@ -104,15 +105,64 @@ public class GameManager : MonoBehaviour {
 		return (maxRow >=5);
 	}
 
+	IEnumerator ChainGlowAnimation(Tile centerTile){
+		float t = 0;
+		centerTile.Blink(3);
+		for (int distance=1;distance<7;distance++){
+			while (t<WOBLEDELAY * distance){
+				t+=Time.deltaTime;
+				yield return 0;
+			}
+			for (int dir=0;dir<8;dir++){
+				int checkX=centerTile.idX;
+				int checkY=centerTile.idY;
+				switch(dir){
+				case 0:
+					checkY=centerTile.idY+distance;
+					break;
+				case 1:
+					checkX=centerTile.idX+distance;
+					checkY=centerTile.idY+distance;
+					break;
+				case 2:
+					checkX=centerTile.idX+distance;
+					break;
+				case 3:
+					checkX=centerTile.idX+distance;
+					checkY=centerTile.idY-distance;
+					break;
+				case 4:
+					checkY=centerTile.idY-distance;
+					break;
+				case 5:
+					checkX=centerTile.idX-distance;
+					checkY=centerTile.idY-distance;
+					break;
+				case 6:
+					checkX=centerTile.idX-distance;
+					break;
+				case 7:
+					checkX=centerTile.idX-distance;
+					checkY=centerTile.idY+distance;
+					break;
+				}
+				if (checkX>=0 && checkX<15 && checkY>=0 && checkY<15){
+					tiles[checkX,checkY].Blink(3-0.4f*distance);
+				}
+			}
+		}
+		yield return 0;
+	}
+
 	IEnumerator PutAnimation(Tile centerTile){
 		
 		isAnimating = true;
 		float t=0;
-		yield return new WaitForSeconds(0.15f);
-		centerTile.GetComponent<Animator>().SetFloat("Power",1);
-		centerTile.GetComponent<Animator>().SetTrigger("Woble");
+		yield return new WaitForSeconds(0.28f-WOBLEDELAY);
+		centerTile.Woble(1);
+		StartCoroutine(ChainGlowAnimation(centerTile));
 		for (int distance=1;distance<5;distance++){
-			while (t<0.05f * distance){
+			while (t<WOBLEDELAY * distance){
 				t+=Time.deltaTime;
 				yield return 0;
 			}
@@ -121,20 +171,17 @@ public class GameManager : MonoBehaviour {
 				if (y==distance || y==-distance){
 					int checkX = centerTile.idX;
 					if (checkX>=0 && checkX<15 && checkY>=0 && checkY<15){
-						tiles[checkX,checkY].GetComponent<Animator>().SetFloat("Power",1-0.2f*distance);
-						tiles[checkX,checkY].GetComponent<Animator>().SetTrigger("Woble");
+						tiles[checkX,checkY].Woble(1-0.2f*distance);
 					}
 				} else {
 					int checkXRight = centerTile.idX+(distance-Mathf.Abs(y));
 					int checkXLeft = centerTile.idX-(distance-Mathf.Abs(y));
 					if (checkY>=0 && checkY<15){
 						if (checkXRight>=0 && checkXRight<15){
-							tiles[checkXRight,checkY].GetComponent<Animator>().SetFloat("Power",1-0.2f*distance);
-							tiles[checkXRight,checkY].GetComponent<Animator>().SetTrigger("Woble");
+							tiles[checkXRight,checkY].Woble(1-0.2f*distance);
 						}
 						if (checkXLeft>=0 && checkXLeft<15){
-							tiles[checkXLeft,checkY].GetComponent<Animator>().SetFloat("Power",1-0.2f*distance);
-							tiles[checkXLeft,checkY].GetComponent<Animator>().SetTrigger("Woble");
+							tiles[checkXLeft,checkY].Woble(1-0.2f*distance);
 						}
 					}
 				}
