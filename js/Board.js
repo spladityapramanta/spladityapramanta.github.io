@@ -46,7 +46,7 @@ Place.prototype.set = function(color){
 };
 
 Place.prototype.unset = function(){
-    this.elm.removeClass("red").removeClass("white").removeClass("set").removeClass("last-move");
+    this.elm.removeClass("black").removeClass("white").removeClass("set").removeClass("last-move");
     this.isSet = false;
 };
 
@@ -78,7 +78,7 @@ var Board = function(boardElm, backgroundElm){
     var clickable = true,
         places = [],
         map = [],
-        numToColor = ["red", "white"],
+        numToColor = ["black", "white"],
         colorToNum = (function(){
             var obj = {};
             numToColor.forEach(function(elm, ind){
@@ -135,7 +135,7 @@ var Board = function(boardElm, backgroundElm){
             boardElm.removeClass("playing");
         }
         if(color){
-            boardElm.removeClass("red").removeClass("white").addClass(color);
+            boardElm.removeClass("black").removeClass("white").addClass(color);
         }
     };
 

@@ -6,7 +6,7 @@ function Game(boardElm, boardBackgroundElm){
         history = [],
         players = {},
         board = new Board(boardElm, boardBackgroundElm),
-        currentColor = "red";
+        currentColor = "black";
 
     board.clicked = function(r, c){
         var p = players[currentColor];
@@ -42,7 +42,7 @@ function Game(boardElm, boardBackgroundElm){
     };
 
     function progress(){
-        if(currentColor === 'red'){
+        if(currentColor === 'black'){
             white.myTurn();
         }else{
             black.myTurn();
@@ -92,7 +92,7 @@ function Game(boardElm, boardBackgroundElm){
         if(history.length > 0) board.highlight(last.r, last.c);
         else board.unHighlight();
         players[last.color].other.myTurn();
-        for(var col in {'red':'','white':''}){
+        for(var col in {'black':'','white':''}){
             if(players[col] instanceof AIPlayer && players[col].computing){
                 players[col].cancel++;
             }
@@ -119,7 +119,7 @@ function Game(boardElm, boardBackgroundElm){
         players[player1.color] = player1;
         players[player2.color] = player2;
         white = players['white'];
-        black = players['red'];
+        black = players['black'];
         white.game = this;
         black.game = this;
         white.other = black;

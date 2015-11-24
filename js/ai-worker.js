@@ -49,10 +49,10 @@ function bufToString(){
 
 ai.ini=function(mode,color){
     this.color=color;
-    if(color=='red'){
+    if(color=='black'){
         this.otc='white';
     }else{
-        this.otc='red';
+        this.otc='black';
     }
     switch(mode){
         case 'test':

@@ -41,7 +41,7 @@ gameData.addRecord('mode', 'vscomputer', function(val){
         $('.vs-computer').hide();
     }else $('.vs-computer').show();
 });
-gameData.addRecord('color', 'red', function(val){
+gameData.addRecord('color', 'black', function(val){
     $('#color-select input[value="'+val+'"]').attr('checked',true);
     $('#color-select input[type="radio"]').checkboxradio('refresh');
 });
