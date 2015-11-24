@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class Tile : MonoBehaviour {
+
+	GameObject attachedPiece;
+
 	public enum TileState{
 		empty, p1, p2
 	}
@@ -19,5 +22,17 @@ public class Tile : MonoBehaviour {
 		if (state==TileState.empty){
 			GameManager.TileClicked(this);
 		}
+	}
+	public void Reset(){
+		state = TileState.empty;
+		if(attachedPiece!=null){
+			Destroy( attachedPiece.gameObject);
+		}
+	}
+
+	public void AttachPiece(GameObject piece){
+		piece.transform.parent = GetComponentInChildren<MeshRenderer>().transform;
+		piece.transform.localPosition = new Vector3(0,0.53f,0);
+		attachedPiece = piece;
 	}
 }

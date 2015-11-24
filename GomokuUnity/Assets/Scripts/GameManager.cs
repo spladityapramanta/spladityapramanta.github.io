@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
 	Tile[,] tiles;
 
 	bool isPlayer1Turn = true;
+	bool isAnimating = false;
 
 	void Awake () {
 		instance = this;
@@ -25,12 +26,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public static void TileClicked(Tile tile){
-		if (instance!=null){
+		if (instance!=null && !instance.isAnimating){
 			GameObject tempPiece = Instantiate(instance.pieceLib) as GameObject;
 			tempPiece.SetActive(true);
-			tempPiece.transform.position = new Vector3(-7+tile.idX,0.2f, -7+tile.idY);
+			tile.AttachPiece(tempPiece);
+			//tempPiece.transform.parent = tile.GetComponentInChildren<MeshRenderer>().transform;
+			//tempPiece.transform.localPosition = new Vector3(0,0.53f,0);
 			tempPiece.GetComponentInChildren<MeshRenderer>().material = instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat;
-			tempPiece.transform.parent = tile.GetComponentInChildren<MeshRenderer>().transform;
 			tile.state = instance.isPlayer1Turn ? Tile.TileState.p1 : Tile.TileState.p2;
 			instance.StartCoroutine(instance.PutAnimation(tile));
 			if (instance.CheckWinFromTile(tile)) Debug.Log((instance.isPlayer1Turn?"player 1":"player 2")+" win!");
@@ -102,6 +104,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	IEnumerator PutAnimation(Tile centerTile){
+		
+		isAnimating = true;
 		float t=0;
 		yield return new WaitForSeconds(0.15f);
 		centerTile.GetComponent<Animator>().SetFloat("Power",1);
@@ -135,6 +139,8 @@ public class GameManager : MonoBehaviour {
 				}
 			}
 		}
+		yield return new WaitForSeconds(0.5f);
+		isAnimating = false;
 		yield return 0;
 	}
 }
