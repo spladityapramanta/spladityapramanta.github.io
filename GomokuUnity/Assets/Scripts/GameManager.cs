@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour {
 	public gameState State;
 	bool isPlayer1Turn = true;
 	bool isAnimating = false;
-	bool isVSHuman = false;
+	[HideInInspector] public bool isVSHuman = false;
 	int AILevel = 1;
 	int checkNumberOfStraightRow = 0;
 	int playerLastPosX = 0;
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour {
 
 	}
 	void Update(){
-		Debug.Log (isPlayer1Turn);
+		//Debug.Log (isPlayer1Turn);
 	 	if (!isPlayer1Turn && !isAnimating) {
 			if (!isVSHuman) {
 				int posX = 0;
