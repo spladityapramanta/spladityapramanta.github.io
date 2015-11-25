@@ -30,6 +30,10 @@ public class Tile : MonoBehaviour {
 			GameManager.TileClicked(this);
 		}
 	}
+	public void OnMouseEnter(){
+		SelectionTile.HoverOnTile(this);
+	}
+
 	public void Reset(){
 		state = TileState.empty;
 		if(attachedPiece!=null){

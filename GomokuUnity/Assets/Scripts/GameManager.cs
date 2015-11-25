@@ -157,8 +157,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	IEnumerator PutAnimation(Tile centerTile){
-		
 		isAnimating = true;
+		SelectionTile.SetClickable(false);
 		float t=0;
 		yield return new WaitForSeconds(0.28f-WOBLEDELAY);
 		centerTile.Woble(1);
@@ -192,6 +192,7 @@ public class GameManager : MonoBehaviour {
 		}
 		yield return new WaitForSeconds(0.5f);
 		isAnimating = false;
+		SelectionTile.SetClickable(true);
 		yield return 0;
 	}
 }
