@@ -157,6 +157,9 @@ public class GameManager : MonoBehaviour {
 		tiles [1, 9].Reset ();
 		Debug.Log ("BLUE");
 		isPlayer1Turn = false;
+		foreach (Tile tile in tiles) {
+			tile.GetComponent<Piece>().SetMaterial(player2Mat);
+		}
 	}
 
 	public void isAIIdiot(){
@@ -363,8 +366,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	IEnumerator PutAnimation(Tile centerTile){
-		
 		isAnimating = true;
+		SelectionTile.SetClickable(false);
 		float t=0;
 		yield return new WaitForSeconds(0.28f-WOBLEDELAY);
 		centerTile.Woble(1);
@@ -398,6 +401,7 @@ public class GameManager : MonoBehaviour {
 		}
 		yield return new WaitForSeconds(0.5f);
 		isAnimating = false;
+		SelectionTile.SetClickable(true);
 		yield return 0;
 	}
 }

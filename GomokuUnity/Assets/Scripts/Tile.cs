@@ -32,6 +32,10 @@ public class Tile : MonoBehaviour {
 		}
 	}
 
+	public void OnMouseEnter(){
+		SelectionTile.HoverOnTile(this);
+	}
+
 	public void Reset(){
 		state = TileState.empty;
 		if(attachedPiece!=null){
