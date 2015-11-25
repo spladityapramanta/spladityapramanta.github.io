@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour {
 	public gameState State;
 	bool isPlayer1Turn = true;
 	bool isAnimating = false;
-	bool isVSHuman = false;
+	[HideInInspector] public bool isVSHuman = false;
 	int AILevel = 1;
 	int checkNumberOfStraightRow = 0;
 	int playerLastPosX = 0;
@@ -101,22 +101,20 @@ public class GameManager : MonoBehaviour {
 	// SHELL STARTING MENU METHODS 
 	public void GOClicked(){
 		Debug.Log ("Gas");
+		State = gameState.ingame;
+		startMenu.SetActive (false);
+		isPlayer1Turn = true;
 		for (int x=0;x<15;x++){
 			for (int y=0;y<15;y++){
-				tiles[x,y].state = Tile.TileState.empty;
 				tiles[x,y].Reset();
 				tiles[x,y].clickable = true;
 			}
 		}
-		State = gameState.ingame;
-		startMenu.SetActive (false);
-		isPlayer1Turn = true;
 
 	}
 
 	public void humanPlay(){
 		Debug.Log ("Human");
-		tiles [6, 12].state = Tile.TileState.empty;
 		tiles [6, 12].Reset ();
 		startMenu.transform.GetChild (2).gameObject.SetActive (false); //red
 		startMenu.transform.GetChild (3).gameObject.SetActive (false); //blue
@@ -124,17 +122,17 @@ public class GameManager : MonoBehaviour {
 		startMenu.transform.GetChild (5).gameObject.SetActive (false); //stupid
 		foreach (Tile tile in tiles) {
 			if(tile.state != Tile.TileState.empty)
-			{
-				tile.state = Tile.TileState.empty;
 				tile.Reset();
-			}
+			if((tile.idX == 1 && tile.idY == 12)||(tile.idX == 6 && tile.idY == 12)||(tile.idX == 6 && tile.idY == 3))
+				tile.clickable = true;
+			else
+				tile.clickable = false;
 		}
 		isVSHuman = true;
 	}
 	
 	public void compPlay(){
 		Debug.Log ("Computer");
-		tiles [1, 12].state = Tile.TileState.empty;
 		tiles [1, 12].Reset ();
 		//startMenu.transform.GetChild (2).gameObject.SetActive (true);
 		//startMenu.transform.GetChild (3).gameObject.SetActive (true);
@@ -143,22 +141,43 @@ public class GameManager : MonoBehaviour {
 		startMenu.transform.GetChild (4).gameObject.SetActive (true); //idiot
 		startMenu.transform.GetChild (5).gameObject.SetActive (true); //stupid
 		isVSHuman = false;
+		foreach (Tile tile in tiles) {
+			if((tile.idX==1 && tile.idY==12)||(tile.idX==1 && tile.idY==9)||(tile.idX==1 && tile.idY==6)||(tile.idX==6 && tile.idY==12)||(tile.idX==6 && tile.idY==9)||(tile.idX==6 && tile.idY==6)||(tile.idX==6 && tile.idY==3))
+			{
+				tile.clickable = true;
+			}
+			else
+			{
+				tile.clickable = false;
+			}
+		}
 	}
 
 	public void isPlayerOneRed(){
-		tiles [6, 9].state = Tile.TileState.empty;
 		tiles [6, 9].Reset ();
 		Debug.Log ("RED");
 		isPlayer1Turn = true;
+		foreach (Tile tile in tiles) {
+			if(tile.state != Tile.TileState.empty)
+			{
+				tile.Reset();
+				tile.state = Tile.TileState.p1;
+				TileClicked(tile);
+			}
+		}
 	}
 
 	public void isPlayerOneBlue(){
-		tiles [1, 9].state = Tile.TileState.empty;
 		tiles [1, 9].Reset ();
 		Debug.Log ("BLUE");
 		isPlayer1Turn = false;
 		foreach (Tile tile in tiles) {
-			tile.GetComponent<Piece>().SetMaterial(player2Mat);
+			if(tile.state != Tile.TileState.empty)
+			{
+				tile.Reset();
+				tile.state = Tile.TileState.p2;
+				TileClicked(tile);
+			}
 		}
 	}
 
@@ -183,7 +202,6 @@ public class GameManager : MonoBehaviour {
 		Debug.Log("RESTART");
 		for (int x=0;x<15;x++){
 			for (int y=0;y<15;y++){
-				tiles[x,y].state = Tile.TileState.empty;
 				tiles[x,y].Reset();
 			}
 		}
