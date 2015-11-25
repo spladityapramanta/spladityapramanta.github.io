@@ -30,6 +30,7 @@ public class Tile : MonoBehaviour {
 			GameManager.TileClicked(this);
 		}
 	}
+
 	public void OnMouseEnter(){
 		SelectionTile.HoverOnTile(this);
 	}

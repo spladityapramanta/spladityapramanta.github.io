@@ -6,15 +6,28 @@ public class GameManager : MonoBehaviour {
 
 	public Tile tileLib;
 	public GameObject pieceLib;
+	public GameObject startMenu;
+	public GameObject gameoverMenu;
 	public Material player1Mat, player2Mat;
 	Tile[,] tiles;
+	public enum gameState{
+		start, ingame, gameover
+	}
 
+	public gameState State;
 	bool isPlayer1Turn = true;
 	bool isAnimating = false;
+	bool isVSHuman = false;
+	int AILevel = 1;
+	int checkNumberOfStraightRow = 0;
+	int playerLastPosX = 0;
+	int playerLastPosY = 0;
 	const float WOBLEDELAY = 0.05f; 
 
 	void Awake () {
 		instance = this;
+		State = gameState.start;
+		gameoverMenu.SetActive (false);
 	}
 	void Start () {
 		tiles = new Tile[15,15];
@@ -24,10 +37,130 @@ public class GameManager : MonoBehaviour {
 				tiles[x,y].SetTile(x,y);
 			}
 		}
+
+	}
+	void Update(){
+		Debug.Log (isPlayer1Turn);
+	 	if (!isPlayer1Turn && !isAnimating) {
+			if (!isVSHuman) {
+				int posX = 0;
+				int posY = 0;
+				switch(AILevel){
+				case 1: //idiot
+					while(tiles[posX,posY].state != Tile.TileState.empty){
+						posX = (int)(Random.value * 15);
+						posY = (int)(Random.value * 15);
+					}
+					break;
+				//case 2: //very stupid
+//					if(checkNumberOfStraightRow ==4)
+//					{
+//						posX = 
+//					}
+				}
+
+				TileClicked(tiles[posX,posY]);
+			}
+		}
 	}
 
+	bool AIStupidWarned(){
+		int tempVal = 1;
+		Tile[] tempTiles = new Tile[4];
+		foreach (Tile tile in tiles) {
+			if(tile.state == Tile.TileState.p1){
+				tempVal +=1;
+				tempTiles[tempVal - 2] = tile;
+				if(tempVal >= 3)
+				{
+					playerLastPosX = tile.idX;
+					playerLastPosY = tile.idY;
+					return true;
+				}
+			}
+			else
+			{
+				tempVal -= 1;
+				//tempTiles = [];
+
+			}
+		}
+		return false;
+	}
+	
+// ================================================================================= //
+	// SHELL STARTING MENU METHODS 
+	public void GOClicked(){
+		Debug.Log ("Gas");
+		State = gameState.ingame;
+		startMenu.SetActive (false);
+		isPlayer1Turn = true;
+	}
+
+	public void humanPlay(){
+		Debug.Log ("Human");
+		startMenu.transform.GetChild (2).gameObject.SetActive (false);
+		startMenu.transform.GetChild (3).gameObject.SetActive (false);
+		isVSHuman = true;
+	}
+	
+	public void compPlay(){
+		Debug.Log ("Computer");
+		startMenu.transform.GetChild (2).gameObject.SetActive (true);
+		startMenu.transform.GetChild (3).gameObject.SetActive (true);
+		isVSHuman = false;
+	}
+
+	public void isPlayerOneRed(){
+		Debug.Log ("RED");
+		isPlayer1Turn = true;
+	}
+
+	public void isPlayerOneBlue(){
+		Debug.Log ("RED");
+		isPlayer1Turn = false;
+	}
+
+	public void isAIIdiot(){
+		Debug.Log ("IDIOT");
+		AILevel = 1;
+	}
+	
+	public void isAIStupid(){
+		Debug.Log ("STUPID");
+		AILevel = 2;
+	}
+
+	public void isAINormal(){
+		Debug.Log ("NORMAL");
+		AILevel = 3;
+	}
+// ================================================================================= // 
+// ================================================================================= //
+	// GAME OVER MENU METHODS
+	public void restart(){
+		Debug.Log("RESTART");
+		for (int x=0;x<15;x++){
+			for (int y=0;y<15;y++){
+				tiles[x,y].state = Tile.TileState.empty;
+				tiles[x,y].Reset();
+			}
+		}
+		bool isPlayer1Turn = true;
+		gameoverMenu.SetActive (false);
+		State = gameState.start;
+		startMenu.SetActive (true);
+	}
+
+	public void quit(){
+		Debug.Log("QUIT");
+		Application.Quit ();
+	}
+
+// ================================================================================= //		
+	
 	public static void TileClicked(Tile tile){
-		if (instance!=null && !instance.isAnimating){
+		if (instance!=null && instance.State == gameState.ingame && !instance.isAnimating){
 			GameObject tempPiece = Instantiate(instance.pieceLib) as GameObject;
 			tempPiece.SetActive(true);
 			tile.AttachPiece(tempPiece);
@@ -101,6 +234,14 @@ public class GameManager : MonoBehaviour {
 		int maxRow = 0;
 		for (int i=0;i<4;i++){
 			maxRow = Mathf.Max(maxRow, Mathf.Abs(lastSameTile[i].idY-lastSameTile[i+4].idY)+1, Mathf.Abs(lastSameTile[i].idX-lastSameTile[i+4].idX)+1 );
+		}
+		if (maxRow >= 5) {
+			State = gameState.gameover;
+			gameoverMenu.SetActive (true);
+		} else {
+			checkNumberOfStraightRow = maxRow;
+			playerLastPosX = lastSameTile[lastSameTile.Length - 1].idX;
+			playerLastPosY = lastSameTile[lastSameTile.Length - 1].idY;
 		}
 		return (maxRow >=5);
 	}
