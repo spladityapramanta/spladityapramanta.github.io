@@ -11,6 +11,7 @@ public class Tile : MonoBehaviour {
 	public int idX, idY;
 	public TileState state;
 	float brightness = 1;
+	public bool clickable = true;
 
 	public void SetTile(int _x, int _y){
 		state = TileState.empty;
@@ -26,7 +27,7 @@ public class Tile : MonoBehaviour {
 		GetComponentInChildren<Renderer>().material.SetColor("_Color",new Color(brightness,brightness,brightness));
 	}
 	public void OnMouseDown(){
-		if (state==TileState.empty){
+		if (state==TileState.empty && clickable){
 			GameManager.TileClicked(this);
 		}
 	}

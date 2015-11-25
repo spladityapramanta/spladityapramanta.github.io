@@ -17,15 +17,13 @@ public class GameManager : MonoBehaviour {
 	public gameState State;
 	bool isPlayer1Turn = true;
 	bool isAnimating = false;
-<<<<<<< HEAD
 	bool isVSHuman = false;
 	int AILevel = 1;
 	int checkNumberOfStraightRow = 0;
 	int playerLastPosX = 0;
 	int playerLastPosY = 0;
-=======
+
 	const float WOBLEDELAY = 0.05f; 
->>>>>>> 0cebec1266bfb6cd895f7d270ab5421927d2b0ac
 
 	void Awake () {
 		instance = this;
@@ -38,13 +36,21 @@ public class GameManager : MonoBehaviour {
 			for (int y=0;y<15;y++){
 				tiles[x,y] = Instantiate<Tile>(tileLib) as Tile;
 				tiles[x,y].SetTile(x,y);
+				if((x==1 && y==12)||(x==1 && y==9)||(x==1 && y==6)||(x==6 && y==12)||(x==6 && y==9)||(x==6 && y==6)||(x==6 && y==3))
+				{
+					tiles[x,y].clickable = true;
+				}
+				else
+				{
+					tiles[x,y].clickable = false;
+				}
 			}
 		}
 
 	}
 	void Update(){
-		Debug.Log (isPlayer1Turn);
-	 	if (!isPlayer1Turn && !isAnimating) {
+		//Debug.Log (isPlayer1Turn);
+	 	if (!isPlayer1Turn && !isAnimating && State == gameState.ingame) {
 			if (!isVSHuman) {
 				int posX = 0;
 				int posY = 0;
@@ -95,32 +101,61 @@ public class GameManager : MonoBehaviour {
 	// SHELL STARTING MENU METHODS 
 	public void GOClicked(){
 		Debug.Log ("Gas");
+		for (int x=0;x<15;x++){
+			for (int y=0;y<15;y++){
+				tiles[x,y].state = Tile.TileState.empty;
+				tiles[x,y].Reset();
+				tiles[x,y].clickable = true;
+			}
+		}
 		State = gameState.ingame;
 		startMenu.SetActive (false);
 		isPlayer1Turn = true;
+
 	}
 
 	public void humanPlay(){
 		Debug.Log ("Human");
-		startMenu.transform.GetChild (2).gameObject.SetActive (false);
-		startMenu.transform.GetChild (3).gameObject.SetActive (false);
+		tiles [6, 12].state = Tile.TileState.empty;
+		tiles [6, 12].Reset ();
+		startMenu.transform.GetChild (2).gameObject.SetActive (false); //red
+		startMenu.transform.GetChild (3).gameObject.SetActive (false); //blue
+		startMenu.transform.GetChild (4).gameObject.SetActive (false); //idiot
+		startMenu.transform.GetChild (5).gameObject.SetActive (false); //stupid
+		foreach (Tile tile in tiles) {
+			if(tile.state != Tile.TileState.empty)
+			{
+				tile.state = Tile.TileState.empty;
+				tile.Reset();
+			}
+		}
 		isVSHuman = true;
 	}
 	
 	public void compPlay(){
 		Debug.Log ("Computer");
-		startMenu.transform.GetChild (2).gameObject.SetActive (true);
-		startMenu.transform.GetChild (3).gameObject.SetActive (true);
+		tiles [1, 12].state = Tile.TileState.empty;
+		tiles [1, 12].Reset ();
+		//startMenu.transform.GetChild (2).gameObject.SetActive (true);
+		//startMenu.transform.GetChild (3).gameObject.SetActive (true);
+		startMenu.transform.GetChild (2).gameObject.SetActive (true); //red
+		startMenu.transform.GetChild (3).gameObject.SetActive (true); //blue
+		startMenu.transform.GetChild (4).gameObject.SetActive (true); //idiot
+		startMenu.transform.GetChild (5).gameObject.SetActive (true); //stupid
 		isVSHuman = false;
 	}
 
 	public void isPlayerOneRed(){
+		tiles [6, 9].state = Tile.TileState.empty;
+		tiles [6, 9].Reset ();
 		Debug.Log ("RED");
 		isPlayer1Turn = true;
 	}
 
 	public void isPlayerOneBlue(){
-		Debug.Log ("RED");
+		tiles [1, 9].state = Tile.TileState.empty;
+		tiles [1, 9].Reset ();
+		Debug.Log ("BLUE");
 		isPlayer1Turn = false;
 	}
 
@@ -162,8 +197,36 @@ public class GameManager : MonoBehaviour {
 
 // ================================================================================= //		
 	
+//	public static void TileClicked(Tile tile){
+//		if (instance!=null && instance.State == gameState.ingame && !instance.isAnimating){
+//			GameObject tempPiece = Instantiate(instance.pieceLib) as GameObject;
+//			tempPiece.SetActive(true);
+//			tile.AttachPiece(tempPiece);
+//			//tempPiece.transform.parent = tile.GetComponentInChildren<MeshRenderer>().transform;
+//			//tempPiece.transform.localPosition = new Vector3(0,0.53f,0);
+//			tempPiece.GetComponent<Piece>().SetMaterial(instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat);
+//			//tempPiece.GetComponentInChildren<MeshRenderer>().material = instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat;
+//			tile.state = instance.isPlayer1Turn ? Tile.TileState.p1 : Tile.TileState.p2;
+//			instance.StartCoroutine(instance.PutAnimation(tile));
+//			if (instance.CheckWinFromTile(tile)) Debug.Log((instance.isPlayer1Turn?"player 1":"player 2")+" win!");
+//			instance.isPlayer1Turn = !instance.isPlayer1Turn;
+//		}
+//	}
+
 	public static void TileClicked(Tile tile){
-		if (instance!=null && instance.State == gameState.ingame && !instance.isAnimating){
+		if (instance!=null && !instance.isAnimating){
+			if(instance.State == gameState.start)
+			{
+				int x = tile.idX;
+				int y = tile.idY;
+				if(x==1&&y==12)instance.humanPlay();
+				if(x==6&&y==12)instance.compPlay();
+				if(x==1&&y==9)instance.isPlayerOneRed();
+				if(x==6&&y==9)instance.isPlayerOneBlue();
+				if(x==1&&y==6)instance.isAIIdiot();
+				if(x==6&&y==3)instance.GOClicked();
+				
+			}
 			GameObject tempPiece = Instantiate(instance.pieceLib) as GameObject;
 			tempPiece.SetActive(true);
 			tile.AttachPiece(tempPiece);
@@ -174,10 +237,9 @@ public class GameManager : MonoBehaviour {
 			tile.state = instance.isPlayer1Turn ? Tile.TileState.p1 : Tile.TileState.p2;
 			instance.StartCoroutine(instance.PutAnimation(tile));
 			if (instance.CheckWinFromTile(tile)) Debug.Log((instance.isPlayer1Turn?"player 1":"player 2")+" win!");
-			instance.isPlayer1Turn = !instance.isPlayer1Turn;
+			if(instance.State == gameState.ingame)instance.isPlayer1Turn = !instance.isPlayer1Turn;
 		}
 	}
-
 	bool CheckWinFromTile(Tile tile){
 		Tile[] lastSameTile = new Tile[8];
 		bool[] isEndCheck = new bool[8];
