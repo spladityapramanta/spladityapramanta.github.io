@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour {
 	int checkNumberOfStraightRow = 0;
 	int playerLastPosX = 0;
 	int playerLastPosY = 0;
+	Piece[] winningPiece;
 	const float WOBLEDELAY = 0.05f; 
 
 	void Awake () {
