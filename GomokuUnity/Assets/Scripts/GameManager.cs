@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour {
 		gameoverMenu.SetActive (false);
 	}
 	void Start () {
+		CameraEffect.MenuPerpective();
 		tiles = new Tile[15,15];
 		for (int x=0;x<15;x++){
 			for (int y=0;y<15;y++){
@@ -103,6 +104,7 @@ public class GameManager : MonoBehaviour {
 	// SHELL STARTING MENU METHODS 
 	public void GOClicked(){
 		Debug.Log ("Gas");
+		CameraEffect.GameplayPerspective();
 		State = gameState.ingame;
 		startMenu.SetActive (false);
 		isPlayer1Turn = true;
@@ -238,27 +240,27 @@ public class GameManager : MonoBehaviour {
 
 	public static void TileClicked(Tile tile){
 		if (instance!=null && !instance.isAnimating){
+			Callback afterClick = null;
 			if(instance.State == gameState.start)
 			{
 				int x = tile.idX;
 				int y = tile.idY;
-				if(x==1&&y==12)instance.humanPlay();
-				if(x==6&&y==12)instance.compPlay();
-				if(x==1&&y==9)instance.isPlayerOneRed();
-				if(x==6&&y==9)instance.isPlayerOneBlue();
-				if(x==1&&y==6)instance.isAIIdiot();
-				if(x==6&&y==3)instance.GOClicked();
-				
+				if(x==1&&y==12)afterClick = instance.humanPlay;
+				if(x==6&&y==12)afterClick = instance.compPlay;
+				if(x==1&&y==9)afterClick = instance.isPlayerOneRed;
+				if(x==6&&y==9)afterClick = instance.isPlayerOneBlue;
+				if(x==1&&y==6)afterClick = instance.isAIIdiot;
+				if(x==6&&y==3)afterClick = instance.GOClicked;
 			}
 			Piece tempPiece = Instantiate<Piece>(instance.pieceLib) as Piece;
 			tempPiece.gameObject.SetActive(true);
 			tile.AttachPiece(tempPiece);
-			//tempPiece.transform.parent = tile.GetComponentInChildren<MeshRenderer>().transform;
-			//tempPiece.transform.localPosition = new Vector3(0,0.53f,0);
+
 			tempPiece.GetComponent<Piece>().SetMaterial(instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat);
-			//tempPiece.GetComponentInChildren<MeshRenderer>().material = instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat;
+
 			tile.state = instance.isPlayer1Turn ? Tile.TileState.p1 : Tile.TileState.p2;
 			instance.StartCoroutine(instance.PutAnimation(tile,()=>{
+				if (afterClick!=null) afterClick();
 				if (instance.CheckWinFromTile(tile)) Debug.Log((instance.isPlayer1Turn?"player 1":"player 2")+" win!");
 			}));
 			if(instance.State == gameState.ingame)instance.isPlayer1Turn = !instance.isPlayer1Turn;
