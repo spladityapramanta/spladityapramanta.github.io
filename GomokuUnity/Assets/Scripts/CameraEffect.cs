@@ -3,15 +3,17 @@ using System.Collections;
 using DG.Tweening;
 
 public class CameraEffect : MonoBehaviour {
-	public static Camera instance;
+	public static CameraEffect instance;
+	public Vector3 initialCameraPosition;
 
 	void Awake(){
-		instance = GetComponent<Camera>();
+		instance = this;
+		initialCameraPosition = transform.position;
 	}
 
 	public static void Shake(float duration, float power = 1){
 		if (instance!=null){
-			instance.DOShakePosition(duration, power*0.3f, 20).OnComplete(()=>instance.transform.position = new Vector3(-24,28,-24));
+			instance.transform.DOShakePosition(duration, power*0.3f, 20).OnComplete(()=>instance.transform.position = instance.initialCameraPosition);
 		}
 	}
 }

@@ -366,6 +366,7 @@ public class GameManager : MonoBehaviour {
 	IEnumerator GameFinishAnimation(Piece[] winningPiece){
 		isAnimating = true;
 		Vector3[] initialPosition = new Vector3[5];
+		SFXManager.PlayOneShot(SFXManager.SFX.powerUp);
 		for (int i=0;i<5;i++){
 			winningPiece[i].Blink(10);
 			winningPiece[i].GetComponent<Animator>().SetBool("isHyped",true);
@@ -392,14 +393,19 @@ public class GameManager : MonoBehaviour {
 		for (int i=0;i<4;i++){
 			Destroy(winningPiece[i].gameObject);
 		}
+		SFXManager.PlayOneShot(SFXManager.SFX.jump);
 		winningPiece[4].transform.localScale = new Vector3(10,10,10);
 		winningPiece[4].GetComponent<Animator>().SetBool("isGiant",true);
 		//for (float t=-0.5f;t<1;t+=Time.deltaTime){
 		//	winningPiece[4].transform.position = Vector3.Lerp(initialPosition[2],Vector3.zero,Mathf.Max(0,t));
 		//}
 		State = gameState.gameover;
+		for (float t=0;t<2;t+=Time.deltaTime){
+			yield return 0;
+		}
 		gameoverMenu.SetActive (true);
 		isAnimating = false;
+		SFXManager.PlayOneShot(SFXManager.SFX.win);
 		yield return 0;
 	}
 

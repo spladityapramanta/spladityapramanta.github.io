@@ -29,6 +29,7 @@ public class Piece : MonoBehaviour {
 	public void GiantSlam(){
 		GameManager.ResetBoard();
 		CameraEffect.Shake(1f,2);
+		SFXManager.PlayOneShot(SFXManager.SFX.boom);
 	}
 
 	public void DestroySelf(){
