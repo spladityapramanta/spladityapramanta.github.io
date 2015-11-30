@@ -26,12 +26,12 @@ public class GameManager : MonoBehaviour {
 	bool isAnimating = false;
 	[HideInInspector] public bool isVSHuman = false;
 	int AILevel = 1;
-	int checkNumberOfStraightRow = 0;
-	int playerLastPosX = 0;
-	int playerLastPosY = 0;
+
 	const float WOBLEDELAY = 0.05f;
 
 	private List<KeyValuePair<int,int>> lastClicked;
+	private int lastClickedNum;
+	int playerLastPosX, playerLastPosY;
 
 
 	void Awake () {
@@ -66,16 +66,23 @@ public class GameManager : MonoBehaviour {
 						posY = (int)(Random.value * 15);
 					}
 					break;
-				//case 2: //very stupid
-//					if(checkNumberOfStraightRow ==4)
-//					{
-//						posX = 
-//					}
+				case 2: //very stupid
+					int random = (int)(Random.value*8);
+					switch(random)
+					{
+						case 1:
+						break;
+					}
+					break;
 				}
 
 				TileClicked(tiles[posX,posY]);
 			}
 		}
+		if (lastClickedNum > 0)
+			undoMenu.SetActive (true);
+		else
+			undoMenu.SetActive (false);
 	}
 
 	public void CreateStageHeight(){
@@ -191,12 +198,11 @@ public class GameManager : MonoBehaviour {
 			{
 				tempVal -= 1;
 				//tempTiles = [];
-
 			}
 		}
 		return false;
 	}
-	
+
 // ================================================================================= //
 	// SHELL STARTING MENU METHODS 
 	public void GOClicked(){
@@ -382,22 +388,21 @@ public class GameManager : MonoBehaviour {
 			}));
 			if(instance.State == gameState.ingame)instance.isPlayer1Turn = !instance.isPlayer1Turn;
 			instance.lastClicked.Add(new KeyValuePair<int,int>(tile.idX, tile.idY));
+			instance.lastClickedNum = instance.lastClicked.Count;
+			//Debug.Log ("lastclick num :" + instance.lastClickedNum);
 		}
 	}
 
 	public void Undo(){
-		int last = lastClicked.Count - 1;
-		Debug.Log (last);
-		if (last >= 1) {
-			undoMenu.SetActive(true);
-			int idX = lastClicked [last].Key;
-			int idY = lastClicked [last].Value;
-			tiles [idX, idY].Reset ();
-			lastClicked.RemoveAt (last);
-			isPlayer1Turn = !isPlayer1Turn;
-		} else {
-			undoMenu.SetActive(false);
-		}
+		int lastIdx = lastClickedNum - 1;
+		Debug.Log ("last idx num:" + lastIdx);
+		int idX = lastClicked [lastIdx].Key;
+		int idY = lastClicked [lastIdx].Value;
+		tiles [idX, idY].Reset ();
+		lastClicked.RemoveAt (lastIdx);
+		Debug.Log ("lastclick num :" + instance.lastClickedNum);
+		isPlayer1Turn = !isPlayer1Turn;
+		lastClickedNum = lastClicked.Count;
 	}
 
 	public static void ResetBoard(){
@@ -490,11 +495,6 @@ public class GameManager : MonoBehaviour {
 				StartCoroutine(GameFinishAnimation(winningPiece));
 				break;
 			}
-		}
-		if (maxRow < 5) {
-			checkNumberOfStraightRow = maxRow;
-			playerLastPosX = lastSameTile[lastSameTile.Length - 1].idX;
-			playerLastPosY = lastSameTile[lastSameTile.Length - 1].idY;
 		}
 		return (maxRow >=5);
 	}
