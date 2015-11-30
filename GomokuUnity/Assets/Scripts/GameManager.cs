@@ -241,8 +241,9 @@ public class GameManager : MonoBehaviour {
 	public static void TileClicked(Tile tile){
 		if (instance!=null && !instance.isAnimating){
 			Callback afterClick = null;
-			if(instance.State == gameState.start)
-			{
+
+			switch (instance.State){
+			case gameState.start :
 				int x = tile.idX;
 				int y = tile.idY;
 				if(x==1&&y==12)afterClick = instance.humanPlay;
@@ -251,6 +252,15 @@ public class GameManager : MonoBehaviour {
 				if(x==6&&y==9)afterClick = instance.isPlayerOneBlue;
 				if(x==1&&y==6)afterClick = instance.isAIIdiot;
 				if(x==6&&y==3)afterClick = instance.GOClicked;
+				break;
+			case gameState.ingame :
+				afterClick = ()=>{
+					if (instance.CheckWinFromTile(tile)) Debug.Log((instance.isPlayer1Turn?"player 1":"player 2")+" win!");
+				};
+				break;
+			case gameState.gameover :
+				break;
+
 			}
 			Piece tempPiece = Instantiate<Piece>(instance.pieceLib) as Piece;
 			tempPiece.gameObject.SetActive(true);
@@ -261,7 +271,6 @@ public class GameManager : MonoBehaviour {
 			tile.state = instance.isPlayer1Turn ? Tile.TileState.p1 : Tile.TileState.p2;
 			instance.StartCoroutine(instance.PutAnimation(tile,()=>{
 				if (afterClick!=null) afterClick();
-				if (instance.CheckWinFromTile(tile)) Debug.Log((instance.isPlayer1Turn?"player 1":"player 2")+" win!");
 			}));
 			if(instance.State == gameState.ingame)instance.isPlayer1Turn = !instance.isPlayer1Turn;
 		}
@@ -341,6 +350,7 @@ public class GameManager : MonoBehaviour {
 				int winX = lastSameTile[i].idX;
 				int winY = lastSameTile[i].idY;
 				for (int winIdx=0;winIdx<5;winIdx++){
+
 					winningPiece[winIdx]=tiles[winX,winY].GetComponentInChildren<Piece>();
 					if (winX<lastSameTile[i+4].idX){
 						winX++;
