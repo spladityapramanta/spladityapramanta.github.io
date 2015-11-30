@@ -40,13 +40,21 @@ public class Tile : MonoBehaviour {
 	}
 
 	public void OnMouseEnter(){
-		SelectionTile.HoverOnTile(this);
+
+		TileMenuButton t = GameManager.isOnMenuButton(idX,idY);
+
+		if (t!=null){
+			SelectionTile.HoverOnTileButton(this,t);
+		} else {
+			SelectionTile.HoverOnTile(this);
+		}
 	}
 
 	public void Reset(){
 		state = TileState.empty;
 		if(attachedPiece!=null){
 			attachedPiece.Fall(attachedPiece.transform.position.normalized * 4 + new Vector3(0,8,0));
+			attachedPiece=null;
 		}
 	}
 
