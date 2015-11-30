@@ -24,9 +24,7 @@ public class GameManager : MonoBehaviour {
 	bool isAnimating = false;
 	[HideInInspector] public bool isVSHuman = false;
 	int AILevel = 1;
-	int checkNumberOfStraightRow = 0;
-	int playerLastPosX = 0;
-	int playerLastPosY = 0;
+
 	const float WOBLEDELAY = 0.05f;
 
 	private List<KeyValuePair<int,int>> lastClicked;
@@ -71,11 +69,14 @@ public class GameManager : MonoBehaviour {
 						posY = (int)(Random.value * 15);
 					}
 					break;
-				//case 2: //very stupid
-//					if(checkNumberOfStraightRow ==4)
-//					{
-//						posX = 
-//					}
+				case 2: //very stupid
+					int random = (int)(Random.value*8);
+					switch(random)
+					{
+						case 1:
+						break;
+					}
+					break;
 				}
 
 				TileClicked(tiles[posX,posY]);
@@ -86,33 +87,9 @@ public class GameManager : MonoBehaviour {
 		else
 			undoMenu.SetActive (false);
 
-		//Debug.Log (lastClickedNum);
+
 	}
 
-	bool AIStupidWarned(){
-		int tempVal = 1;
-		Tile[] tempTiles = new Tile[4];
-		foreach (Tile tile in tiles) {
-			if(tile.state == Tile.TileState.p1){
-				tempVal +=1;
-				tempTiles[tempVal - 2] = tile;
-				if(tempVal >= 3)
-				{
-					playerLastPosX = tile.idX;
-					playerLastPosY = tile.idY;
-					return true;
-				}
-			}
-			else
-			{
-				tempVal -= 1;
-				//tempTiles = [];
-
-			}
-		}
-		return false;
-	}
-	
 // ================================================================================= //
 	// SHELL STARTING MENU METHODS 
 	public void GOClicked(){
@@ -393,11 +370,6 @@ public class GameManager : MonoBehaviour {
 				StartCoroutine(GameFinishAnimation(winningPiece));
 				break;
 			}
-		}
-		if (maxRow < 5) {
-			checkNumberOfStraightRow = maxRow;
-			playerLastPosX = lastSameTile[lastSameTile.Length - 1].idX;
-			playerLastPosY = lastSameTile[lastSameTile.Length - 1].idY;
 		}
 		return (maxRow >=5);
 	}
