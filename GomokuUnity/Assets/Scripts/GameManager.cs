@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour {
 	public Piece pieceLib;
 	public GameObject startMenu;
 	public GameObject gameoverMenu;
+	public GameObject undoMenu;
 	public Material player1Mat, player2Mat;
 	Tile[,] tiles;
 	public enum gameState{
@@ -25,7 +27,10 @@ public class GameManager : MonoBehaviour {
 	int checkNumberOfStraightRow = 0;
 	int playerLastPosX = 0;
 	int playerLastPosY = 0;
-	const float WOBLEDELAY = 0.05f; 
+	const float WOBLEDELAY = 0.05f;
+
+	private List<KeyValuePair<int,int>> lastClicked;
+
 
 	void Awake () {
 		instance = this;
@@ -33,6 +38,7 @@ public class GameManager : MonoBehaviour {
 		gameoverMenu.SetActive (false);
 	}
 	void Start () {
+		lastClicked = new List<KeyValuePair<int,int>> ();
 		tiles = new Tile[15,15];
 		for (int x=0;x<15;x++){
 			for (int y=0;y<15;y++){
@@ -211,6 +217,7 @@ public class GameManager : MonoBehaviour {
 		gameoverMenu.SetActive (false);
 		State = gameState.start;
 		startMenu.SetActive (true);
+		lastClicked.Clear ();
 	}
 
 	public void quit(){
@@ -253,15 +260,28 @@ public class GameManager : MonoBehaviour {
 			Piece tempPiece = Instantiate<Piece>(instance.pieceLib) as Piece;
 			tempPiece.gameObject.SetActive(true);
 			tile.AttachPiece(tempPiece);
-			//tempPiece.transform.parent = tile.GetComponentInChildren<MeshRenderer>().transform;
-			//tempPiece.transform.localPosition = new Vector3(0,0.53f,0);
 			tempPiece.GetComponent<Piece>().SetMaterial(instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat);
-			//tempPiece.GetComponentInChildren<MeshRenderer>().material = instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat;
 			tile.state = instance.isPlayer1Turn ? Tile.TileState.p1 : Tile.TileState.p2;
 			instance.StartCoroutine(instance.PutAnimation(tile,()=>{
 				if (instance.CheckWinFromTile(tile)) Debug.Log((instance.isPlayer1Turn?"player 1":"player 2")+" win!");
 			}));
 			if(instance.State == gameState.ingame)instance.isPlayer1Turn = !instance.isPlayer1Turn;
+			instance.lastClicked.Add(new KeyValuePair<int,int>(tile.idX, tile.idY));
+		}
+	}
+
+	public void Undo(){
+		int last = lastClicked.Count - 1;
+		Debug.Log (last);
+		if (last >= 1) {
+			undoMenu.SetActive(true);
+			int idX = lastClicked [last].Key;
+			int idY = lastClicked [last].Value;
+			tiles [idX, idY].Reset ();
+			lastClicked.RemoveAt (last);
+			isPlayer1Turn = !isPlayer1Turn;
+		} else {
+			undoMenu.SetActive(false);
 		}
 	}
 
