@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour {
 	const float WOBLEDELAY = 0.05f;
 
 	private List<KeyValuePair<int,int>> lastClicked;
+	private int lastClickedNum;
 
 
 	void Awake () {
@@ -38,11 +39,8 @@ public class GameManager : MonoBehaviour {
 		gameoverMenu.SetActive (false);
 	}
 	void Start () {
-<<<<<<< HEAD
 		lastClicked = new List<KeyValuePair<int,int>> ();
-=======
 		CameraEffect.MenuPerpective();
->>>>>>> 597775672247ad0595b4cc719eb76cc7fe6ee153
 		tiles = new Tile[15,15];
 		for (int x=0;x<15;x++){
 			for (int y=0;y<15;y++){
@@ -83,6 +81,12 @@ public class GameManager : MonoBehaviour {
 				TileClicked(tiles[posX,posY]);
 			}
 		}
+		if (lastClickedNum > 0)
+			undoMenu.SetActive (true);
+		else
+			undoMenu.SetActive (false);
+
+		//Debug.Log (lastClickedNum);
 	}
 
 	bool AIStupidWarned(){
@@ -256,12 +260,12 @@ public class GameManager : MonoBehaviour {
 			case gameState.start :
 				int x = tile.idX;
 				int y = tile.idY;
-				if(x==1&&y==12)afterClick = instance.humanPlay;
-				if(x==6&&y==12)afterClick = instance.compPlay;
-				if(x==1&&y==9)afterClick = instance.isPlayerOneRed;
-				if(x==6&&y==9)afterClick = instance.isPlayerOneBlue;
-				if(x==1&&y==6)afterClick = instance.isAIIdiot;
-				if(x==6&&y==3)afterClick = instance.GOClicked;
+				if(x==1&&y==12)instance.humanPlay();
+				if(x==6&&y==12)instance.compPlay();
+				if(x==1&&y==9)instance.isPlayerOneRed();
+				if(x==6&&y==9)instance.isPlayerOneBlue();
+				if(x==1&&y==6)instance.isAIIdiot();
+				if(x==6&&y==3)instance.GOClicked();
 				break;
 			case gameState.ingame :
 				afterClick = ()=>{
@@ -282,22 +286,21 @@ public class GameManager : MonoBehaviour {
 			}));
 			if(instance.State == gameState.ingame)instance.isPlayer1Turn = !instance.isPlayer1Turn;
 			instance.lastClicked.Add(new KeyValuePair<int,int>(tile.idX, tile.idY));
+			instance.lastClickedNum = instance.lastClicked.Count;
+			//Debug.Log ("lastclick num :" + instance.lastClickedNum);
 		}
 	}
 
 	public void Undo(){
-		int last = lastClicked.Count - 1;
-		Debug.Log (last);
-		if (last >= 1) {
-			undoMenu.SetActive(true);
-			int idX = lastClicked [last].Key;
-			int idY = lastClicked [last].Value;
-			tiles [idX, idY].Reset ();
-			lastClicked.RemoveAt (last);
-			isPlayer1Turn = !isPlayer1Turn;
-		} else {
-			undoMenu.SetActive(false);
-		}
+		int lastIdx = lastClickedNum - 1;
+		Debug.Log ("last idx num:" + lastIdx);
+		int idX = lastClicked [lastIdx].Key;
+		int idY = lastClicked [lastIdx].Value;
+		tiles [idX, idY].Reset ();
+		lastClicked.RemoveAt (lastIdx);
+		Debug.Log ("lastclick num :" + instance.lastClickedNum);
+		isPlayer1Turn = !isPlayer1Turn;
+		lastClickedNum = lastClicked.Count;
 	}
 
 	public static void ResetBoard(){
