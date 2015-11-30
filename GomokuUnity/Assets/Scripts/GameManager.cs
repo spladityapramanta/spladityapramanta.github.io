@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour {
 
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviour {
 				}
 			}
 		}
+		CreateStageHeight();
 
 	}
 	void Update(){
@@ -73,6 +75,30 @@ public class GameManager : MonoBehaviour {
 
 				TileClicked(tiles[posX,posY]);
 			}
+		}
+	}
+
+	public void CreateStageHeight(){
+		for (int x=0;x<15;x++){
+			for (int y=0;y<15;y++){
+				tiles[x,y].ColorDefault();
+				tiles[x,y].transform.DOMove(
+					new Vector3(tiles[x,y].transform.position.x,
+				            0f,
+				            tiles[x,y].transform.position.z),
+					0.5f);
+			}
+		}
+
+		for (int x=5;x<10;x++){
+			
+			int y =5;
+			tiles[x,y].ColorHighlight();
+			tiles[x,y].transform.DOMove(
+				new Vector3(tiles[x,y].transform.position.x,
+			            1f,
+			            tiles[x,y].transform.position.z),
+				0.5f);
 		}
 	}
 
@@ -415,6 +441,7 @@ public class GameManager : MonoBehaviour {
 		for (float t=0;t<2;t+=Time.deltaTime){
 			yield return 0;
 		}
+		CameraEffect.MenuPerpective();
 		gameoverMenu.SetActive (true);
 		isAnimating = false;
 		SFXManager.PlayOneShot(SFXManager.SFX.win);
