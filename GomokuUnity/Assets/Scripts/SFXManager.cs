@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SFXManager : MonoBehaviour {
 	public enum SFX{
-		vibrato, ping
+		vibrato, ping, boom, powerUp, jump, win
 	}
 	public static SFXManager instance;
 	public AudioClip[] clips;

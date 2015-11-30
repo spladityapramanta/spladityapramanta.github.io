@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Tile : MonoBehaviour {
 
-	GameObject attachedPiece;
+	Piece attachedPiece;
 
 	public enum TileState{
 		empty, p1, p2
@@ -39,14 +39,22 @@ public class Tile : MonoBehaviour {
 	public void Reset(){
 		state = TileState.empty;
 		if(attachedPiece!=null){
-			Destroy( attachedPiece.gameObject);
+			attachedPiece.Fall(attachedPiece.transform.position.normalized * 4 + new Vector3(0,8,0));
 		}
 	}
 
-	public void AttachPiece(GameObject piece){
+	public void AttachPiece(Piece piece){
 		piece.transform.parent = GetComponentInChildren<MeshRenderer>().transform;
 		piece.transform.localPosition = new Vector3(0,0.5f,0);
 		attachedPiece = piece;
+	}
+
+	public void DetachPiece(){
+		if (attachedPiece!=null){
+			attachedPiece.transform.parent = null;
+			attachedPiece = null;
+			state = TileState.empty;
+		}
 	}
 
 	public void Woble(float power){
