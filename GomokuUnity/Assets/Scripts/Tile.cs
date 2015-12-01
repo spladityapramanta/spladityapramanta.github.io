@@ -19,13 +19,20 @@ public class Tile : MonoBehaviour {
 		idY = _y;
 		gameObject.SetActive(true);
 		transform.position = new Vector3(-7+_x,0,-7+_y);
-		
+	}
+
+	public void ColorDefault(){
 		int color = 0;
-		if (_x%2==0) color++;
-		if (_y%2==0) color++;
+		if (idX%2==0) color++;
+		if (idY%2==0) color++;
 		brightness = 1-0.3f*color;
 		GetComponentInChildren<Renderer>().material.SetColor("_Color",new Color(brightness,brightness,brightness));
 	}
+
+	public void ColorHighlight(){
+		GetComponentInChildren<Renderer>().material.SetColor("_Color",new Color(2,2,2));
+	}
+
 	public void OnMouseDown(){
 		if (state==TileState.empty && clickable){
 			GameManager.TileClicked(this);
@@ -33,13 +40,21 @@ public class Tile : MonoBehaviour {
 	}
 
 	public void OnMouseEnter(){
-		SelectionTile.HoverOnTile(this);
+
+		TileMenuButton t = GameManager.isOnMenuButton(idX,idY);
+
+		if (t!=null){
+			SelectionTile.HoverOnTileButton(this,t);
+		} else {
+			SelectionTile.HoverOnTile(this);
+		}
 	}
 
 	public void Reset(){
 		state = TileState.empty;
 		if(attachedPiece!=null){
 			attachedPiece.Fall(attachedPiece.transform.position.normalized * 4 + new Vector3(0,8,0));
+			attachedPiece=null;
 		}
 	}
 
