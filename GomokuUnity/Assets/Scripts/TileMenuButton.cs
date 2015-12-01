@@ -17,8 +17,10 @@ public class TileMenuButton {
 	public static Rect RECT_IDIOT = new Rect(1,6,5,1);
 	public static Rect RECT_STUPID = new Rect(9,6,5,1);
 	public static Rect RECT_GO = new Rect(5,2,5,2);
+	public static Rect RECT_RESTART = new Rect(5,4,5,1);
+	public static Rect RECT_MAINMENU = new Rect(5,1,5,1);
 
-	public static Rect RECT_RESTART = new Rect(1,4,7,1);
+	//public static Rect RECT_RESTART = new Rect(1,4,7,1);
 	public static Rect QUIT = new Rect(10,4,7,1);
 
 	public TileMenuButton(Rect _rect, Tile _pivot, Callback _callback){
