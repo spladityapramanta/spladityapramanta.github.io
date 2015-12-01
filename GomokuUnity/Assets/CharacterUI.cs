@@ -10,8 +10,8 @@ public class CharacterUI : MonoBehaviour {
 
 	const float POSXOUT = 570;
 	const float POSXIN = 370;
-	const float POSYIN = 86;
-	const float POSYOUT = 55;
+	const float POSYIN = 136;
+	const float POSYOUT = 105;
 
 	void Awake(){
 		instance = this;

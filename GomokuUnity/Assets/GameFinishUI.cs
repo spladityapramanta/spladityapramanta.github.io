@@ -9,7 +9,7 @@ public class GameFinishUI : MonoBehaviour {
 	public Image winImage;
 	public Sprite winRedLib, winBlueLib;
 
-	const float POSY = 30;
+	const float POSY = 80;
 	const float POSXIN = 0;
 	const float POSXOUT = 800;
 
