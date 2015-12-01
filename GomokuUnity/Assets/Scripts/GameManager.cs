@@ -71,14 +71,67 @@ public class GameManager : MonoBehaviour {
 					break;
 				case 2: //very stupid
 					int random = (int)(Random.value*8);
+					Debug.Log (random);
 					switch(random)
 					{
-						case 1:
-						break;
-					}
-					break;
-				}
+							case 1:
+								if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
+									posX = lastClicked[lastClickedNum - 1].Key - 1;
+									posY = lastClicked[lastClickedNum - 1].Value  + 1;
+								}
+							break;
 
+							case 2:
+								if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
+									posX = lastClicked[lastClickedNum - 1].Key;
+									posY = lastClicked[lastClickedNum - 1].Value + 1;
+								}
+							break;
+
+							case 3:
+								if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
+									posX = lastClicked[lastClickedNum - 1].Key + 1;
+									posY = lastClicked[lastClickedNum - 1].Value  + 1;
+								}
+							break;
+
+							case 4:
+								if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
+									posX = lastClicked[lastClickedNum - 1].Key + 1;
+									posY = lastClicked[lastClickedNum - 1].Value;
+								}
+							break;
+
+							case 5:
+								if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
+									posX = lastClicked[lastClickedNum - 1].Key + 1;
+									posY = lastClicked[lastClickedNum - 1].Value  - 1;
+								}
+							break;
+
+							case 6:
+								if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
+									posX = lastClicked[lastClickedNum - 1].Key;
+									posY = lastClicked[lastClickedNum - 1].Value - 1;
+								}
+							break;
+
+							case 7:
+								if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
+									posX = lastClicked[lastClickedNum - 1].Key - 1;
+									posY = lastClicked[lastClickedNum - 1].Value  - 1;
+								}
+							break;
+
+							case 8:
+							if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
+									posX = lastClicked[lastClickedNum - 1].Key - 1;
+									posY = lastClicked[lastClickedNum - 1].Value;
+								}
+							break;
+						}
+					break;
+					}
 				TileClicked(tiles[posX,posY]);
 			}
 		}
@@ -242,6 +295,7 @@ public class GameManager : MonoBehaviour {
 				if(x==1&&y==9)instance.isPlayerOneRed();
 				if(x==6&&y==9)instance.isPlayerOneBlue();
 				if(x==1&&y==6)instance.isAIIdiot();
+				if(x==6&&y==6)instance.isAIStupid();
 				if(x==6&&y==3)instance.GOClicked();
 				break;
 			case gameState.ingame :
