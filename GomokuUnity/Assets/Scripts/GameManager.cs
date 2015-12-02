@@ -57,81 +57,82 @@ public class GameManager : MonoBehaviour {
 	}
 	void Update(){
 		//Debug.Log (isPlayer1Turn);
-	 	if (!isPlayer1Turn && !isAnimating && State == gameState.ingame) {
-			if (!isVSHuman) {
-				int posX = 0;
-				int posY = 0;
-				switch(AILevel){
-				case 1: //idiot
-					while(tiles[posX,posY].state != Tile.TileState.empty){
-						posX = (int)(Random.value * 15);
-						posY = (int)(Random.value * 15);
+		if (!isAnimating && State == gameState.ingame && !isVSHuman
+		    && ((!isPlayer1Turn && isPlayAsRed) || (isPlayer1Turn && !isPlayAsRed)) ) {
+			int posX = 0;
+			int posY = 0;
+			switch(AILevel){
+			case 1: //idiot
+				while(tiles[posX,posY].state != Tile.TileState.empty){
+					posX = (int)(Random.value * 15);
+					posY = (int)(Random.value * 15);
+				}
+				break;
+			case 2: //very stupid
+				int random = (int)(Random.value*8);
+				Debug.Log (random);
+				switch(random)
+				{
+						case 1:
+							if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
+								posX = lastClicked[lastClickedNum - 1].Key - 1;
+								posY = lastClicked[lastClickedNum - 1].Value  + 1;
+							}
+						break;
+
+						case 2:
+							if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
+								posX = lastClicked[lastClickedNum - 1].Key;
+								posY = lastClicked[lastClickedNum - 1].Value + 1;
+							}
+						break;
+
+						case 3:
+							if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
+								posX = lastClicked[lastClickedNum - 1].Key + 1;
+								posY = lastClicked[lastClickedNum - 1].Value  + 1;
+							}
+						break;
+
+						case 4:
+							if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
+								posX = lastClicked[lastClickedNum - 1].Key + 1;
+								posY = lastClicked[lastClickedNum - 1].Value;
+							}
+						break;
+
+						case 5:
+							if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
+								posX = lastClicked[lastClickedNum - 1].Key + 1;
+								posY = lastClicked[lastClickedNum - 1].Value  - 1;
+							}
+						break;
+
+						case 6:
+							if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
+								posX = lastClicked[lastClickedNum - 1].Key;
+								posY = lastClicked[lastClickedNum - 1].Value - 1;
+							}
+						break;
+
+						case 7:
+							if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
+								posX = lastClicked[lastClickedNum - 1].Key - 1;
+								posY = lastClicked[lastClickedNum - 1].Value  - 1;
+							}
+						break;
+
+						case 8:
+						if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
+								posX = lastClicked[lastClickedNum - 1].Key - 1;
+								posY = lastClicked[lastClickedNum - 1].Value;
+							}
+						break;
 					}
-					break;
-				case 2: //very stupid
-					int random = (int)(Random.value*8);
-					Debug.Log (random);
-					switch(random)
-					{
-							case 1:
-								if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
-									posX = lastClicked[lastClickedNum - 1].Key - 1;
-									posY = lastClicked[lastClickedNum - 1].Value  + 1;
-								}
-							break;
-
-							case 2:
-								if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
-									posX = lastClicked[lastClickedNum - 1].Key;
-									posY = lastClicked[lastClickedNum - 1].Value + 1;
-								}
-							break;
-
-							case 3:
-								if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
-									posX = lastClicked[lastClickedNum - 1].Key + 1;
-									posY = lastClicked[lastClickedNum - 1].Value  + 1;
-								}
-							break;
-
-							case 4:
-								if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
-									posX = lastClicked[lastClickedNum - 1].Key + 1;
-									posY = lastClicked[lastClickedNum - 1].Value;
-								}
-							break;
-
-							case 5:
-								if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
-									posX = lastClicked[lastClickedNum - 1].Key + 1;
-									posY = lastClicked[lastClickedNum - 1].Value  - 1;
-								}
-							break;
-
-							case 6:
-								if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
-									posX = lastClicked[lastClickedNum - 1].Key;
-									posY = lastClicked[lastClickedNum - 1].Value - 1;
-								}
-							break;
-
-							case 7:
-								if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
-									posX = lastClicked[lastClickedNum - 1].Key - 1;
-									posY = lastClicked[lastClickedNum - 1].Value  - 1;
-								}
-							break;
-
-							case 8:
-							if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
-									posX = lastClicked[lastClickedNum - 1].Key - 1;
-									posY = lastClicked[lastClickedNum - 1].Value;
-								}
-							break;
-						}
-                }
-				TileClicked(tiles[posX,posY]);
-		    }
+				break;
+            }
+			TileClicked(tiles[posX,posY]);
+	    
         }
 		if (lastClickedNum > 0)
 			undoMenu.SetActive (true);
