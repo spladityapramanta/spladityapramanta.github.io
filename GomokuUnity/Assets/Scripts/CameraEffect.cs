@@ -34,19 +34,21 @@ public class CameraEffect : MonoBehaviour {
 
 	public static void MenuPerpective(){
 		if (instance!=null){
+			GameManager.isAnimating = true;
 			instance.state = Perpective.menu;
 			Camera cam = instance.GetComponent<Camera>();
 			cam.transform.DOMove(menuCamPos,1f);
-			cam.transform.DORotate(menuCamRot,1f);
+			cam.transform.DORotate(menuCamRot,1f).OnComplete(()=>GameManager.isAnimating=false);
 		}
 	}
 
 	public static void GameplayPerspective(){
 		if (instance!=null){
+			GameManager.isAnimating = true;
 			instance.state = Perpective.gameplay;
 			Camera cam = instance.GetComponent<Camera>();
 			cam.transform.DOMove(gameplayCamPos,1f);
-			cam.transform.DORotate(gameplayCamRot,1f);
+			cam.transform.DORotate(gameplayCamRot,1f).OnComplete(()=>GameManager.isAnimating=false);
 		}
 	}
 }

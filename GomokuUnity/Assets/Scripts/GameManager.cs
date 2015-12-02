@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour {
 
 	public gameState State;
 	bool isPlayer1Turn = true;
-	bool isAnimating = false;
+	public static bool isAnimating = false;
 	[HideInInspector] public bool isVSHuman = false;
 	public bool isPlayAsRed = true;
 	int AILevel = 1;
@@ -52,13 +52,40 @@ public class GameManager : MonoBehaviour {
 				tiles[x,y].SetTile(x,y);
 			}
 		}
-		MenuMainComputer();
-		SettingVsAI();
+		//SettingVsAI();
+		isAnimating = true;
+		GameUI.TitleScreenExit(()=>{
+			isAnimating = false;
+			MenuMainComputer();
+			SettingVsAI();
+		});
 	}
 	void Update(){
-		//Debug.Log (isPlayer1Turn);
-		if (!isAnimating && State == gameState.ingame && !isVSHuman
-		    && ((!isPlayer1Turn && isPlayAsRed) || (isPlayer1Turn && !isPlayAsRed)) ) {
+
+		if (!isAnimating && State == gameState.ingame){
+			GameUI.SetUndo(lastClicked.Count>0);
+		}
+
+		if (Input.GetKeyDown(KeyCode.U) && !isAnimating && State == gameState.ingame){
+			Debug.Log("undo");
+			if (isVSHuman){
+				if(Undo()){
+					if (isPlayer1Turn){
+						GameUI.RedFocus();
+					} else {
+						GameUI.BlueFocus();
+					}
+				}
+			} else {
+				Debug.Log("Undo");
+				Undo();
+				Debug.Log(isPlayer1Turn);
+				Undo();
+				Debug.Log(isPlayer1Turn);
+			}
+		}
+
+		if (!isAnimating && State == gameState.ingame && !isVSHuman && ((!isPlayer1Turn && isPlayAsRed) || (isPlayer1Turn && !isPlayAsRed)) ) {
 			int posX = 0;
 			int posY = 0;
 			switch(AILevel){
@@ -71,74 +98,73 @@ public class GameManager : MonoBehaviour {
 			case 2: //very stupid
 				int random = (int)(Random.value*8);
 				Debug.Log (random);
-				switch(random)
-				{
-						case 1:
-							if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
-								posX = lastClicked[lastClickedNum - 1].Key - 1;
-								posY = lastClicked[lastClickedNum - 1].Value  + 1;
-							}
-						break;
+				switch(random){
+					case 1:
+						if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
+							posX = lastClicked[lastClickedNum - 1].Key - 1;
+							posY = lastClicked[lastClickedNum - 1].Value  + 1;
+						}
+					break;
 
-						case 2:
-							if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
-								posX = lastClicked[lastClickedNum - 1].Key;
-								posY = lastClicked[lastClickedNum - 1].Value + 1;
-							}
-						break;
+					case 2:
+						if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
+							posX = lastClicked[lastClickedNum - 1].Key;
+							posY = lastClicked[lastClickedNum - 1].Value + 1;
+						}
+					break;
 
-						case 3:
-							if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
-								posX = lastClicked[lastClickedNum - 1].Key + 1;
-								posY = lastClicked[lastClickedNum - 1].Value  + 1;
-							}
-						break;
+					case 3:
+						if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value + 1].state == Tile.TileState.empty){
+							posX = lastClicked[lastClickedNum - 1].Key + 1;
+							posY = lastClicked[lastClickedNum - 1].Value  + 1;
+						}
+					break;
 
-						case 4:
-							if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
-								posX = lastClicked[lastClickedNum - 1].Key + 1;
-								posY = lastClicked[lastClickedNum - 1].Value;
-							}
-						break;
+					case 4:
+						if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
+							posX = lastClicked[lastClickedNum - 1].Key + 1;
+							posY = lastClicked[lastClickedNum - 1].Value;
+						}
+					break;
 
-						case 5:
-							if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
-								posX = lastClicked[lastClickedNum - 1].Key + 1;
-								posY = lastClicked[lastClickedNum - 1].Value  - 1;
-							}
-						break;
+					case 5:
+						if(tiles[lastClicked[lastClickedNum - 1].Key + 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
+							posX = lastClicked[lastClickedNum - 1].Key + 1;
+							posY = lastClicked[lastClickedNum - 1].Value  - 1;
+						}
+					break;
 
-						case 6:
-							if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
-								posX = lastClicked[lastClickedNum - 1].Key;
-								posY = lastClicked[lastClickedNum - 1].Value - 1;
-							}
-						break;
+					case 6:
+						if(tiles[lastClicked[lastClickedNum - 1].Key, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
+							posX = lastClicked[lastClickedNum - 1].Key;
+							posY = lastClicked[lastClickedNum - 1].Value - 1;
+						}
+					break;
 
-						case 7:
-							if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
-								posX = lastClicked[lastClickedNum - 1].Key - 1;
-								posY = lastClicked[lastClickedNum - 1].Value  - 1;
-							}
-						break;
+					case 7:
+						if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value - 1].state == Tile.TileState.empty){
+							posX = lastClicked[lastClickedNum - 1].Key - 1;
+							posY = lastClicked[lastClickedNum - 1].Value  - 1;
+						}
+					break;
 
-						case 8:
-						if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
-								posX = lastClicked[lastClickedNum - 1].Key - 1;
-								posY = lastClicked[lastClickedNum - 1].Value;
-							}
-						break;
+					case 8:
+					if(tiles[lastClicked[lastClickedNum - 1].Key - 1, lastClicked[lastClickedNum - 1].Value].state == Tile.TileState.empty){
+							posX = lastClicked[lastClickedNum - 1].Key - 1;
+							posY = lastClicked[lastClickedNum - 1].Value;
+						}
+					break;
 					}
 				break;
             }
 			TileClicked(tiles[posX,posY]);
-	    
-        }
-		if (lastClickedNum > 0)
-			undoMenu.SetActive (true);
-		else
-			undoMenu.SetActive (false);
-	}
+		    
+	        }
+			if (lastClickedNum > 0)
+				undoMenu.SetActive (true);
+			else
+				undoMenu.SetActive (false);
+		}
 
 
 	public void CreateStageHeight(){
@@ -252,7 +278,7 @@ public class GameManager : MonoBehaviour {
 		menuButtons.Add(new TileMenuButton(TileMenuButton.RECT_RESTART,
 		                                   tiles[(int)TileMenuButton.RECT_HUMAN.x, (int)TileMenuButton.RECT_HUMAN.y] ,
 		                                   ()=>{
-			GameFinishUI.Exit();
+			GameUI.WinExit();
 			StartGame();
 		}));
 		menuButtons.Add(new TileMenuButton(TileMenuButton.RECT_MAINMENU,
@@ -260,7 +286,8 @@ public class GameManager : MonoBehaviour {
 		                                   ()=>{
 			MenuMainComputer();
 			SettingVsAI();
-			GameFinishUI.Exit();
+			GameUI.TitleNameEnter();
+			GameUI.WinExit();
 		}));
 		CreateStageHeight();
 	}
@@ -291,7 +318,11 @@ public class GameManager : MonoBehaviour {
 // ================================================================================= //
 	// SHELL STARTING MENU METHODS 
 	public void StartGame(){
-		CharacterUI.Entrance();
+		lastClicked.Clear();
+		lastClickedNum = 0;
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.7f,0.9f);
+		GameUI.CharEntrance();
+		GameUI.TitleNameExit();
 		CameraEffect.GameplayPerspective();
 		MenuClear();
 		State = gameState.ingame;
@@ -307,6 +338,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SettingVsHuman(){
 		Debug.Log ("Human");
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.7f,0.9f);
 		for (int i=0;i<menuButtons.Count;i++){
 			if (i!=0) 
 			{
@@ -322,6 +354,7 @@ public class GameManager : MonoBehaviour {
 	
 	public void SettingVsAI(){
 		MenuMainComputer();
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.7f,0.86f);
 		Debug.Log ("Computer");
 		tiles [1, 12].Reset ();
 		//startMenu.transform.GetChild (2).gameObject.SetActive (true);
@@ -350,6 +383,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SettingPlayAsRed(){
 		Debug.Log ("RED");
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.7f,0.83f);
 		isPlayAsRed = true;
 		menuButtons[2].pivot.OnMouseDown();
 		menuButtons[3].pivot.Reset();
@@ -363,6 +397,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SettingPlayAsBlue(){
 		Debug.Log ("BLUE");
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.7f,0.8f);
 		isPlayAsRed = false;
 		menuButtons[2].pivot.Reset();
 		menuButtons[3].pivot.OnMouseDown();
@@ -376,6 +411,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SettingAIIdiot(){
 		Debug.Log ("IDIOT");
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.7f,0.76f);
 		AILevel = 1;
 		menuButtons[4].pivot.OnMouseDown();
 		menuButtons[5].pivot.Reset();
@@ -383,6 +419,7 @@ public class GameManager : MonoBehaviour {
 	
 	public void SettingAIStupid(){
 		Debug.Log ("STUPID");
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.7f,0.73f);
 		AILevel = 2;
 		menuButtons[4].pivot.Reset();
 		menuButtons[5].pivot.OnMouseDown();
@@ -390,6 +427,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SettingAINormal(){
 		Debug.Log ("NORMAL");
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.7f,0.9f);
 		AILevel = 3;
 	}
 // ================================================================================= // 
@@ -397,6 +435,7 @@ public class GameManager : MonoBehaviour {
 	// GAME OVER MENU METHODS
 	public void restart(){
 		Debug.Log("RESTART");
+		SFXManager.PlayOneShot(SFXManager.SFX.ping,0.7f,0.8f);
 		for (int x=0;x<15;x++){
 			for (int y=0;y<15;y++){
 				tiles[x,y].Reset();
@@ -415,13 +454,15 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public static void TileClicked(Tile tile){
-		if (instance!=null && !instance.isAnimating){
+		if (instance!=null && !isAnimating){
 			Callback afterClick = null;
 
 			switch (instance.State){
 			case gameState.start :
 				break;
 			case gameState.ingame :
+				instance.lastClicked.Add(new KeyValuePair<int,int>(tile.idX, tile.idY));
+				instance.lastClickedNum = instance.lastClicked.Count;
 				afterClick = ()=>{
 					if (instance.CheckWinFromTile(tile)) Debug.Log((instance.isPlayer1Turn?"player 1":"player 2")+" win!");
 				};
@@ -435,37 +476,41 @@ public class GameManager : MonoBehaviour {
 			tile.AttachPiece(tempPiece);
 			tempPiece.GetComponent<Piece>().SetMaterial(instance.isPlayer1Turn ? instance.player1Mat : instance.player2Mat);
 			tile.state = instance.isPlayer1Turn ? Tile.TileState.p1 : Tile.TileState.p2;
+
 			instance.StartCoroutine(instance.PutAnimation(tile,()=>{
 				if (afterClick!=null) afterClick();
 				if(instance.State == gameState.ingame){
 					instance.SwitchTurn();
 				}
 			}));
-
-			instance.lastClicked.Add(new KeyValuePair<int,int>(tile.idX, tile.idY));
-			instance.lastClickedNum = instance.lastClicked.Count;
 			//Debug.Log ("lastclick num :" + instance.lastClickedNum);
 		}
 	}
 
-	public void Undo(){
-		int lastIdx = lastClickedNum - 1;
-		Debug.Log ("last idx num:" + lastIdx);
-		int idX = lastClicked [lastIdx].Key;
-		int idY = lastClicked [lastIdx].Value;
-		tiles [idX, idY].Reset ();
-		lastClicked.RemoveAt (lastIdx);
-		Debug.Log ("lastclick num :" + instance.lastClickedNum);
-		isPlayer1Turn = !isPlayer1Turn;
-		lastClickedNum = lastClicked.Count;
+	public bool Undo(){
+		if (lastClicked.Count>0){
+
+			int lastIdx = lastClickedNum - 1;
+			//Debug.Log ("last idx num:" + lastIdx);
+			int idX = lastClicked [lastIdx].Key;
+			int idY = lastClicked [lastIdx].Value;
+			tiles [idX, idY].Reset ();
+			lastClicked.RemoveAt (lastIdx);
+			//Debug.Log ("lastclick num :" + instance.lastClickedNum);
+			Debug.Log(lastClicked.Count);
+			isPlayer1Turn = !isPlayer1Turn;
+			lastClickedNum = lastClicked.Count;
+			return true;
+		}
+		return false;
 	}
 
 	public void SwitchTurn(){
 		instance.isPlayer1Turn = !instance.isPlayer1Turn;
 		if (instance.isPlayer1Turn){
-			CharacterUI.RedFocus();
+			GameUI.RedFocus();
 		} else {
-			CharacterUI.BlueFocus();
+			GameUI.BlueFocus();
 		}
 	}
 
@@ -566,7 +611,9 @@ public class GameManager : MonoBehaviour {
 	IEnumerator GameFinishAnimation(Piece[] winningPiece){
 		isAnimating = true;
 		State = gameState.gameover;
-		CharacterUI.Exit();
+		Tile center = winningPiece[2].GetComponentInParent<Tile>();
+
+		GameUI.CharExit();
 		Vector3[] initialPosition = new Vector3[5];
 		SFXManager.PlayOneShot(SFXManager.SFX.powerUp);
 		for (int i=0;i<5;i++){
@@ -605,7 +652,7 @@ public class GameManager : MonoBehaviour {
 			yield return 0;
 		}
 		CameraEffect.MenuPerpective();
-		GameFinishUI.Entrance(isPlayer1Turn);
+		GameUI.WinEntrance(isPlayer1Turn);
 		MenuGameFinish();
 		//gameoverMenu.SetActive (true);
 		isAnimating = false;
@@ -662,6 +709,19 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		yield return 0;
+	}
+
+	public static void BigSlamWoble(int _x, int _y){
+		if (instance!=null){
+			for (int x = 0;x<15;x++){
+				for (int y = 0; y<15; y++){
+					float distance = Mathf.Sqrt((_x-x)*(_x-x)+(_y-y)*(_y-y));
+					//instance.tiles[x,y].GetComponentInChildren<Renderer>().material.DOFade(1,distance/25f).OnComplete(()=>{
+						instance.tiles[x,y].Woble(Mathf.Max( 2-distance/7,0));
+					//});
+				}
+			}
+		}
 	}
 
 	IEnumerator PutAnimation(Tile centerTile, Callback callback = null){

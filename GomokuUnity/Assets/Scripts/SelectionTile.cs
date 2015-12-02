@@ -52,7 +52,7 @@ public class SelectionTile : MonoBehaviour {
 	}
 
 	public void OnMouseDown(){
-		if (currentTile!=null) 
+		if (currentTile!=null && !GameManager.isAnimating) 
 		{
 			if (isClickable){
 				if (currentTile.state == Tile.TileState.empty){

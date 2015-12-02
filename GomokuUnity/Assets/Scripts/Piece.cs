@@ -28,6 +28,7 @@ public class Piece : MonoBehaviour {
 
 	public void GiantSlam(){
 		GameManager.ResetBoard();
+		GameManager.BigSlamWoble((int)transform.position.x+7,(int)transform.position.z+7);
 		CameraEffect.Shake(1f,2);
 		SFXManager.PlayOneShot(SFXManager.SFX.boom);
 	}
